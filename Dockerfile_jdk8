@@ -1,0 +1,11 @@
+FROM maven:3.5.3-jdk-8 AS build
+COPY src /usr/src/app/src
+COPY pom.xml /usr/src/app
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+
+FROM openjdk:8-jdk
+VOLUME /tmp
+COPY --from=build /usr/src/app/target/docker-cpu-memory-limit-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+CMD /usr/bin/java -jar app.jar -Djava.security.egd=file:/dev/./urandom
