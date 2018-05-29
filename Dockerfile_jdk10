@@ -6,6 +6,6 @@ RUN mvn -f /usr/src/app/pom.xml clean package
 
 FROM openjdk:10-jdk
 VOLUME /tmp
-COPY --from=build /usr/src/app/target/docker-cpu-memory-limit-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /usr/src/app/target/docker-java-cpu-memory-limit-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 CMD /usr/bin/java -jar app.jar -Djava.security.egd=file:/dev/./urandom

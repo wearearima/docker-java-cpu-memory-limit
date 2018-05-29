@@ -37,13 +37,13 @@ Move to the downloaded repo, `cd docker-java-cpu-memory-limit`, and build same i
  - JDK8 image:
 
 ```  
-    docker build -t eu.arima:docker-java-cpu-memory-limit:java8 -f Dockerfile_jdk8
+    docker build -t eu.arima/docker-java-cpu-memory-limit:java8 -f Dockerfile_jdk8 .
 ```
 
  - JDK10 image:
 
 ```
-    docker build -t eu.arima:docker-java-cpu-memory-limit:java10 -f Dockerfile_jdk10
+    docker build -t eu.arima/docker-java-cpu-memory-limit:java10 -f Dockerfile_jdk10 .
 ```
 
 We can check the new images invoking `docker image ls`:
@@ -80,16 +80,16 @@ For demonstration purposes, containers' memory and cpu will be limited running t
  - JDK8 container:
 
 ```  
-    docker run -m 1GB -c 1 eu.arima/docker-java-cpu-memory-limit:java8
+    docker run --memory=1GB --cpus=1 eu.arima/docker-java-cpu-memory-limit:java8
 ```
 
  - JDK10 container:
 
 ```
-    docker run -m 1GB -c 1 eu.arima/docker-java-cpu-memory-limit:java10 
+    docker run --memory=1GB --cpus=1 eu.arima/docker-java-cpu-memory-limit:java10 
 ```
 
-Memory is limited to 1 GB With `-m 1GB` option and CPU to one core with `-c 1` option.
+Memory is limited to 1 GB with `--memory=1GB` option and CPU to one core with `--cpus=1` option.
 
 # Results
 
@@ -101,7 +101,7 @@ The result is:
 | Max Java CPU Cores                          | 2          | 1          |
 
 With JDK10 java ergonomics has calculated the memory and cpu limits based on the configuration of the container 
-(1GB and 1 cpu). However, the container with JDK8 has calculated the same configuration based on the Docker daemon 
+(1GB and 1 cpu). However, the container with JDK8 has calculated these features based on the Docker daemon 
 configuration (5.818GiB and 2 cpus).  
 
 # Resources
