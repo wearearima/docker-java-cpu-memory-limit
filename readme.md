@@ -1,6 +1,7 @@
 # Introduction
 
-Prior to JDK10, Java configuration in Docker containers was a bit tricky because JVM ergonomics set some values 
+Prior to JDK10, Java configuration in Docker containers was a bit tricky because 
+[JVM Ergonomics ](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/ergonomics.html) set some values 
 (like CPU cores or Heap memory limit) based on Docker daemon configuration. This behaviour forced to set JVM limits 
 explicitly (with -Xmx for example) or via command line options (like -XX:+UseCGroupMemoryLimitForHeap). Now, with JDK10
 , the JVM sets theses values based on Docker container's configuration instead of Docker daemon. 
