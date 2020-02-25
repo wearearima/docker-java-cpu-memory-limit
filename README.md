@@ -1,13 +1,15 @@
 # Introduction
 
-Prior to JDK10, Java configuration in Docker containers was a bit tricky because 
+Prior to Java 8u191, Java configuration in Docker containers was a bit tricky because 
 [JVM Ergonomics ](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/ergonomics.html) set some values 
 (like CPU cores or Heap memory limit) based on Docker daemon configuration. This behaviour forced to set JVM limits 
-explicitly (with -Xmx for example) or via command line options (like -XX:+UseCGroupMemoryLimitForHeap). Now, with JDK10
-, the JVM sets theses values based on Docker container's configuration instead of Docker daemon. 
+explicitly (with -Xmx for example) or via command line options (like -XX:+UseCGroupMemoryLimitForHeap). Now, with Java 
+8u191 or Java 10, the JVM sets theses values based on Docker container's configuration instead of Docker daemon. 
 
-We'll compare these different behaviours running a demo application in JDK8 and JDK10. The application visualize the 
-number of CPU cores and the memory limit in the logs: 
+We'll compare these different behaviours running a demo application in Java 8u121 and Java 8u191. Unlike the former, the 
+latter is a container aware Java version. 
+
+The application visualizes the number of CPU cores and the memory limit in the logs: 
 
 ```
     public static void main(String[] args) {
@@ -19,7 +21,7 @@ number of CPU cores and the memory limit in the logs:
     }
 ``` 
 
-We'll see that the values are different depending on the JDK. 
+We'll see that the values are different depending on the Java version. 
 
 # Requirements
 
@@ -33,26 +35,26 @@ Clone this repo:
     git clone https://github.com/wearearima/docker-java-cpu-memory-limit.git
 ```
 
-Move to the downloaded repo, `cd docker-java-cpu-memory-limit`, and build same image with different JDK versions:
+Move to the downloaded repo, `cd docker-java-cpu-memory-limit`, and build same image with different Java versions:
 
- - JDK8 image:
+ - Java 8u121 image:
 
 ```  
-    docker build -t eu.arima/docker-java-cpu-memory-limit:java8 -f Dockerfile_jdk8 .
+    docker build -t eu.arima/docker-java-cpu-memory-limit:java8u121 -f Dockerfile_java8u121 .
 ```
 
- - JDK10 image:
+ - Java 8u191 image:
 
 ```
-    docker build -t eu.arima/docker-java-cpu-memory-limit:java10 -f Dockerfile_jdk10 .
+    docker build -t eu.arima/docker-java-cpu-memory-limit:java8u191 -f Dockerfile_java8u191 .
 ```
 
 We can check the new images invoking `docker image ls`:
 
 ```
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
-eu.arima/docker-java-cpu-memory-limit          java8               7e26f907aed2        29 hours ago        631MB
-eu.arima/docker-java-cpu-memory-limit          java10              c4eabbac6bd6        29 hours ago        870MB
+eu.arima/docker-java-cpu-memory-limit          java8u121           7e26f907aed2        29 hours ago        92.2MB
+eu.arima/docker-java-cpu-memory-limit          java8u191           c4eabbac6bd6        29 hours ago        88.6MB
 ```
 
 # Docker daemon configuration
@@ -78,16 +80,16 @@ Therefore, I've got configured 2 CPU cores and almost 6GB memory for all my cont
 
 For demonstration purposes, containers' memory and cpu will be limited running theses commands:
 
- - JDK8 container:
+ - Java 8u121 container:
 
 ```  
-    docker run --memory=1GB --cpus=1 eu.arima/docker-java-cpu-memory-limit:java8
+    docker run --memory=1GB --cpus=1 eu.arima/docker-java-cpu-memory-limit:java8u121
 ```
 
- - JDK10 container:
+ - Java 8u191 container:
 
 ```
-    docker run --memory=1GB --cpus=1 eu.arima/docker-java-cpu-memory-limit:java10 
+    docker run --memory=1GB --cpus=1 eu.arima/docker-java-cpu-memory-limit:java8u191 
 ```
 
 Memory is limited to 1 GB with `--memory=1GB` option and CPU to one core with `--cpus=1` option.
@@ -96,13 +98,13 @@ Memory is limited to 1 GB with `--memory=1GB` option and CPU to one core with `-
 
 The result is:
 
-| Feature                                     | Java 8     | Java 10    |
+| Feature                                     | Java 8u121 | Java 8u191 |
 | --------------------------------------------| ---------- | ---------- |
 | Max Java Memory (MB)                        | 1324       | 247        |
 | Max Java CPU Cores                          | 2          | 1          |
 
-With JDK10 java ergonomics has calculated the memory and cpu limits based on the configuration of the container 
-(1GB and 1 cpu). However, the container with JDK8 has calculated these features based on the Docker daemon 
+With Java 8u191 java ergonomics has calculated the memory and cpu limits based on the configuration of the container 
+(1GB and 1 cpu). However, the container with Java 8u121 has calculated these features based on the Docker daemon 
 configuration (5.818GiB and 2 cpus).  
 
 # Resources
